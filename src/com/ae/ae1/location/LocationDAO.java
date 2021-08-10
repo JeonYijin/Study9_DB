@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.ae.ae1.util.DBConnect;
 
@@ -17,10 +18,101 @@ public class LocationDAO {
 		
 	}
 	
-	public void getOne(int location_id) {
+	//getCount
+	//location의 주소 갯수를 리턴하고 출력
+	
+	public int getCount() {
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		int count = 0;
+		try {
+			con =dbConncet.getConnect();
+			String sql = "SELECT COUNT(STREET_ADDRESS) as count FROM LOCATIONS";
+			
+			st = con.prepareStatement(sql);
+			rs = st.executeQuery();
+			rs.next();
+			
+			count = rs.getInt("count");
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return count;
+		
+	}
+	
+
+	
+	//getSearch
+	//주소의 일부를 받아서 검색 찾은 것들을 출력
+	
+	public ArrayList<LocationDTO> getSearch(String address) {
+		
+		ArrayList<LocationDTO> ar = new ArrayList<>();
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs= null;
+		LocationDTO locationDTO = null;
+		try {
+			con = dbConncet.getConnect();
+			
+			
+			String sql = "SELECT * FROM LOCATIONS WHERE STREET_ADDRESS LIKE ?";
+			st = con.prepareStatement(sql);
+			st.setString(1, "%"+address+"%"); // '%'|| ? ||'%'이렇게하면 바로 sql문에 가능
+			
+			rs = st.executeQuery();
+			
+			while(rs.next()) {
+				locationDTO = new LocationDTO();
+				
+				locationDTO.setLocation_id(rs.getInt("LOCATION_ID"));
+				locationDTO.setStreet_address(rs.getString("STREET_ADDRESS"));
+				locationDTO.setPostal_code(rs.getString("POSTAL_CODE"));
+				locationDTO.setCity(rs.getString("CITY"));
+				locationDTO.setState_province(rs.getString("STATE_PROVINCE"));
+				locationDTO.setCountry_id(rs.getString("COUNTRY_ID"));
+				
+				ar.add(locationDTO);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return ar;
+	}
+	
+	
+	
+	
+	public LocationDTO getOne(int location_id) {
 		
 		//ADD-DTO Branch
-		
+		LocationDTO locationDTO = null;
 		Connection con = null;
 		PreparedStatement st = null;
 		ResultSet rs= null;
@@ -38,14 +130,15 @@ public class LocationDAO {
 			if(rs.next()) {
 				//getString(컬럼명) <- 컬럼명은 데이터베이스 테이블의 컬럼명이 아니라 조회된 컬럼명임
 				//별칭으로 바꾸었을 때는 별칭으로 입력해야 함 조회된 테이블 컬럼명만 확인가능
-				System.out.print(rs.getInt("LOCATION_ID")+"\t");
-				System.out.print(rs.getString("STREET_ADDRESS")+"\t");
-				System.out.print(rs.getString("POSTAL_CODE")+"\t");
-				System.out.print(rs.getString("CITY")+"\t");
-				System.out.print(rs.getString("STATE_PROVINCE")+"\t");
-				System.out.println(rs.getString("COUNTRY_ID"));
-				System.out.println("--------------------------------------------------------------------------");
-			
+				locationDTO = new LocationDTO();
+				
+				locationDTO.setLocation_id(rs.getInt("LOCATION_ID"));
+				locationDTO.setStreet_address(rs.getString("STREET_ADDRESS"));
+				locationDTO.setPostal_code(rs.getString("POSTAL_CODE"));
+				locationDTO.setCity(rs.getString("CITY"));
+				locationDTO.setState_province(rs.getString("STATE_PROVINCE"));
+				locationDTO.setCountry_id(rs.getString("COUNTRY_ID"));
+				
 			}else {
 				System.out.println("없는 번호");
 			}
@@ -65,13 +158,14 @@ public class LocationDAO {
 			}
 		}
 
+		return locationDTO;
 		
 	}
 	
 
 	
 	
-	public void getList() {
+	public  ArrayList<LocationDTO> getList() {
 		//LOCATIONS Table을 조회해서 출력
 		//1. 로그인 정보 적기, 드라이버로딩, 커넥션 객체 만들고, sql문 만들고, 최종결과 전송하고 처리하기
 		
@@ -79,7 +173,8 @@ public class LocationDAO {
 		
 	//1. 로그인 정보 입력
 
-		
+		ArrayList<LocationDTO> ar = new ArrayList<>();
+		LocationDTO locationDTO = null;
 		ResultSet rs = null;
 		PreparedStatement pr = null;
 		Connection con = null;
@@ -99,13 +194,17 @@ public class LocationDAO {
 			rs = pr.executeQuery();
 			
 			while(rs.next()) {
-				System.out.print(rs.getInt("LOCATION_ID")+"\t");
-				System.out.print(rs.getString("STREET_ADDRESS")+"\t");
-				System.out.print(rs.getString("POSTAL_CODE")+"\t");
-				System.out.print(rs.getString("CITY")+"\t");
-				System.out.print(rs.getString("STATE_PROVINCE")+"\t");
-				System.out.println(rs.getString("COUNTRY_ID"));
-				System.out.println("--------------------------------------------------------------------------");
+				locationDTO = new LocationDTO();
+				
+				locationDTO.setLocation_id(rs.getInt("LOCATION_ID"));
+				locationDTO.setStreet_address(rs.getString("STREET_ADDRESS"));
+				locationDTO.setPostal_code(rs.getString("POSTAL_CODE"));
+				locationDTO.setCity(rs.getString("CITY"));
+				locationDTO.setState_province(rs.getString("STATE_PROVINCE"));
+				locationDTO.setCountry_id(rs.getString("COUNTRY_ID"));
+					
+				ar.add(locationDTO);
+
 			}
 			
 		} catch (Exception e) {
@@ -123,7 +222,7 @@ public class LocationDAO {
 			
 		}
 		
-		
+		return ar;
 		
 	}
 	
