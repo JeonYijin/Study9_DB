@@ -2,6 +2,7 @@ package com.ae.ae1.employee;
 
 import java.sql.Date;
 
+
 public class EmployeeDTO {
 
 	private int employee_id;
@@ -11,10 +12,11 @@ public class EmployeeDTO {
 	private String phone_number;
 	private Date hire_date;
 	private String job_id;
-	private double salary;
+	private int salary;
 	private double commission_pct;
 	private int manager_id;
 	private int department_id;
+	
 	public int getEmployee_id() {
 		return employee_id;
 	}
@@ -57,10 +59,10 @@ public class EmployeeDTO {
 	public void setJob_id(String job_id) {
 		this.job_id = job_id;
 	}
-	public double getSalary() {
+	public int getSalary() {
 		return salary;
 	}
-	public void setSalary(double salary) {
+	public void setSalary(int salary) {
 		this.salary = salary;
 	}
 	public double getCommission_pct() {
@@ -81,6 +83,8 @@ public class EmployeeDTO {
 	public void setDepartment_id(int department_id) {
 		this.department_id = department_id;
 	}
+	
+	
 	
 	
 	

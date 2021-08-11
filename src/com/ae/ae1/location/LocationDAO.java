@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.ae.ae1.employee.EmployeeDTO;
 import com.ae.ae1.util.DBConnect;
 
 public class LocationDAO {
@@ -17,6 +18,54 @@ public class LocationDAO {
 		dbConncet = new DBConnect();
 		
 	}
+	
+	public LocationDTO getLocation(int employee_id) {
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		LocationDTO locationDTO = null;
+		
+		try {
+			con = dbConncet.getConnect();
+			String sql = "SELECT * "
+					+ "FROM LOCATIONS "
+					+ "WHERE LOCATION_ID = "
+					+ "(SELECT LOCATION_ID FROM DEPARTMENTS WHERE DEPARTMENT_ID = "
+					+ "(SELECT DEPARTMENT_ID FROM EMPLOYEES  WHERE EMPLOYEE_ID = 100)"
+					+ ")"; 
+			st = con.prepareStatement(sql);
+			rs = st.executeQuery();
+			
+			if(rs.next()) {
+
+				locationDTO = new LocationDTO();
+				
+				locationDTO.setLocation_id(rs.getInt("LOCATION_ID"));
+				locationDTO.setStreet_address(rs.getString("STREET_ADDRESS"));
+				locationDTO.setPostal_code(rs.getString("POSTAL_CODE"));
+				locationDTO.setCity(rs.getString("CITY"));
+				locationDTO.setState_province(rs.getString("STATE_PROVINCE"));
+				locationDTO.setCountry_id(rs.getString("COUNTRY_ID"));
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return locationDTO;
+		
+	}
+	
+	
 	
 	//getCount
 	//location의 주소 갯수를 리턴하고 출력

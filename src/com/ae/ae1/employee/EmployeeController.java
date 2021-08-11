@@ -21,10 +21,11 @@ public class EmployeeController {
 		//double d = employeeDAO.getAvg();
 		//System.out.println(d);
 		
-		ArrayList<Double> dd = employeeDAO.getDpAvg();
-		employeeView.view2(dd);
-		
-		
+//		ArrayList<Double> dd = employeeDAO.getDpAvg();
+//		employeeView.view2(dd);
+		employeeDTO.setEmployee_id(101);
+		Emp_DepartDTO emp_departDTO= employeeDAO.getJoin(employeeDTO);
+		employeeView.view(emp_departDTO);
 		
 		
 	}

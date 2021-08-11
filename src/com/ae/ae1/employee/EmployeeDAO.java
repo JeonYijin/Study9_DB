@@ -5,16 +5,71 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import com.ae.ae1.department.DepartmentDTO;
 import com.ae.ae1.util.DBConnect;
 
 public class EmployeeDAO {
 
-	DBConnect dbConnect;
+	private DBConnect dbConnect;
 	
 	public EmployeeDAO() {
 		dbConnect = new DBConnect();
 	}
+	
+	//getJoin
+	public Emp_DepartDTO getJoin(EmployeeDTO employeeDTO) {
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		Emp_DepartDTO emp_departDTO = null;
+		DepartmentDTO departmentDTO = null;
+		try {
+			con = dbConnect.getConnect();
+			//StringBuffer 사용해보기
+			
+			String sql = "SELECT E.LAST_NAME, E.SALARY, E.HIRE_DATE, D.DEPARTMENT_NAME "
+					+ "FROM EMPLOYEES E INNER JOIN DEPARTMENTS D "
+					+ "ON E.DEPARTMENT_ID = D.DEPARTMENT_ID "
+					+ "WHERE E.EMPLOYEE_ID = ?";
+			st = con.prepareStatement(sql);
+			st.setInt(1, employeeDTO.getEmployee_id());
+			rs = st.executeQuery();
+			
+			if(rs.next()) {
+				emp_departDTO = new Emp_DepartDTO();
+				departmentDTO = new DepartmentDTO();
+				emp_departDTO.setLast_name(rs.getString(1));
+				emp_departDTO.setSalary(rs.getInt(2));
+				emp_departDTO.setHire_date(rs.getDate(3));
+				departmentDTO.setDepartment_name(rs.getString(4));
+				emp_departDTO.setDepartmentDTO(departmentDTO);
+				//emp_departDTO.setDepartmentDTO(new DepartmentDTO());
+				//emp_departDTO.getDepartmentDTO().setDepartment_name(rs.getString(4));
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return emp_departDTO;
+		
+		
+	}
+	
+	
 	
 	//1. 전체사원 출력
 	public ArrayList<EmployeeDTO> getList() {
@@ -42,7 +97,7 @@ public class EmployeeDAO {
 				employeeDTO.setPhone_number(rs.getString(5)); 
 				employeeDTO.setHire_date(rs.getDate(6));
 				employeeDTO.setJob_id(rs.getString(7));
-				employeeDTO.setSalary(rs.getDouble(8));
+				employeeDTO.setSalary(rs.getInt(8));
 				employeeDTO.setCommission_pct(rs.getDouble(9));
 				employeeDTO.setManager_id(rs.getInt(10));
 				employeeDTO.setDepartment_id(rs.getInt(11));
@@ -92,7 +147,7 @@ public class EmployeeDAO {
 				employeeDTO.setPhone_number(rs.getString(5)); 
 				employeeDTO.setHire_date(rs.getDate(6));
 				employeeDTO.setJob_id(rs.getString(7));
-				employeeDTO.setSalary(rs.getDouble(8));
+				employeeDTO.setSalary(rs.getInt(8));
 				employeeDTO.setCommission_pct(rs.getDouble(9));
 				employeeDTO.setManager_id(rs.getInt(10));
 				employeeDTO.setDepartment_id(rs.getInt(11));
@@ -142,7 +197,7 @@ public class EmployeeDAO {
 				employeeDTO.setPhone_number(rs.getString(5)); 
 				employeeDTO.setHire_date(rs.getDate(6));
 				employeeDTO.setJob_id(rs.getString(7));
-				employeeDTO.setSalary(rs.getDouble(8));
+				employeeDTO.setSalary(rs.getInt(8));
 				employeeDTO.setCommission_pct(rs.getDouble(9));
 				employeeDTO.setManager_id(rs.getInt(10));
 				employeeDTO.setDepartment_id(rs.getInt(11));
@@ -193,7 +248,7 @@ public class EmployeeDAO {
 				employeeDTO.setPhone_number(rs.getString(5)); 
 				employeeDTO.setHire_date(rs.getDate(6));
 				employeeDTO.setJob_id(rs.getString(7));
-				employeeDTO.setSalary(rs.getDouble(8));
+				employeeDTO.setSalary(rs.getInt(8));
 				employeeDTO.setCommission_pct(rs.getDouble(9));
 				employeeDTO.setManager_id(rs.getInt(10));
 				employeeDTO.setDepartment_id(rs.getInt(11));
@@ -262,12 +317,12 @@ public class EmployeeDAO {
 		double avg1 = 0;
 		try {
 			con = dbConnect.getConnect();
-			String sql = "SELECT AVG(SALARY) AS DpSAL FROM EMPLOYEES GROUP BY DEPARTMENT_ID";
+			String sql = "SELECT AVG(SALARY) FROM EMPLOYEES GROUP BY DEPARTMENT_ID";
 			st = con.prepareStatement(sql);
 			rs = st.executeQuery();
 			
 			while(rs.next()) {
-				 avg1 = rs.getDouble("DpSAL");
+				 avg1 = rs.getDouble(1);
 				 d.add(avg1);
 			}
 			
@@ -287,6 +342,20 @@ public class EmployeeDAO {
 		return d;
 		
 	}
+	// 부서명과 부서별 평균 급여를 받기
+	public void getDPAVG(){
+		//map도 활용 가능 - 리턴 가능
+		HashMap<String, Object> hashmap = new HashMap<>();
+		
+		hashmap.put("id", 20);
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		
+		
+	}
+	
 	
 	
 }
