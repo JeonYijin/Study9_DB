@@ -25,7 +25,9 @@ public class LocationController {
 		while(check) {
 			System.out.println("1. 전체 정보 출력");
 			System.out.println("2. 한개 정보 출력");
-			System.out.println("3. 종료");
+			System.out.println("3. 지역 정보 추가");
+			System.out.println("4. 지역 정보 삭제");
+			System.out.println("5. 종료");
 			int select = sc.nextInt();
 			
 			if(select == 1) {
@@ -46,6 +48,35 @@ public class LocationController {
 					locationView.view("없는 id");
 				}
 				
+				
+			}else if(select == 3){
+				LocationDTO locationDTO = new LocationDTO();
+				locationDTO.setLocation_id(3800);
+				locationDTO.setStreet_address("AEAEAE");
+				locationDTO.setPostal_code("121312");
+				locationDTO.setCity("Seoul");
+				locationDTO.setState_province("null");
+				locationDTO.setCountry_id("US");
+				int result =0;
+				result = locationDAO.setLocation(locationDTO);
+				
+				if(result>0) {
+					locationView.view("성공");
+				}else {
+					locationView.view("실패");
+				}
+				
+			}else if(select == 4) {
+				LocationDTO locationDTO = new LocationDTO();
+				locationDTO.setLocation_id(3800);
+				int result =0;
+				
+				result = locationDAO.delete(locationDTO);
+				if(result>0) {
+					locationView.view("성공");
+				}else {
+					locationView.view("실패");
+				}
 				
 			}else {
 				//check = false;
