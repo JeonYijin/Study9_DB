@@ -1,5 +1,6 @@
 package com.ae.ae1.member;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MemberInput {
@@ -14,7 +15,8 @@ public class MemberInput {
 		
 	}
 	
-	public void input(Scanner sc) {
+	public ArrayList<MemberDTO> input(Scanner sc) {
+		ArrayList<MemberDTO> ar = new ArrayList<>();
 		MemberDTO memberDTO = new MemberDTO();
 		System.out.println("id >>");
 		String member_id = sc.next();
@@ -26,6 +28,19 @@ public class MemberInput {
 		String member_phone = sc.next();
 		System.out.println("EMAIL>>");
 		String member_email = sc.next();
+		
+	
+			memberDTO.setId(member_id);
+			memberDTO.setPw(member_pw);
+			memberDTO.setName(member_name);
+			memberDTO.setPhone(member_phone);
+			memberDTO.setEmail(member_email);
+			
+			ar.add(memberDTO);
+		
+		
+		
+		return ar;
 	}
 	
 	

@@ -57,20 +57,25 @@ public class MemberController {
 				
 			}else if(select == 3) {
 				MemberDTO memberDTO = new MemberDTO();
-				memberDTO.setId("AE3");
-				memberDTO.setPw(5487);
-				memberDTO.setName("PARK");
-				memberDTO.setPhone("010-005-569");
-				memberDTO.setEmail("PARK@naver.com");
+				ArrayList<MemberDTO> ar = memberInput.input(sc);
+				
 				int result =0;
-				result = memberDAO.setMember(memberDTO);
+				result = memberDAO.setMember(ar.get(0));
 				if(result>0) {
 					System.out.println("생성되었습니다");
 				}else {
 					System.out.println("실패");
 				}
 			}else if(select == 4) {
-				
+				MemberDTO memberDTO = new MemberDTO();
+				int result =0;
+				memberDTO = memberInput.inputId(sc);
+				result = memberDAO.delete(memberDTO);
+				if(result>0) {
+					memberView.view("삭제");
+				}else {
+					memberView.view("삭제 실패");
+				}
 			}else {
 				check = false;
 			}

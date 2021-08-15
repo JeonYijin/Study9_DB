@@ -127,6 +127,32 @@ public class MemberDAO {
 	
 	//4. 회원 탈퇴 - 삭제
 	
-	
+	public int delete(MemberDTO memberDTO) {
+		Connection con = null;
+		PreparedStatement st = null;
+		int result = 0; 
+		
+		try {
+			con = dbConnect.getConnect();
+			String sql = "DELETE MEMBER WHERE ID = ?";
+			st = con.prepareStatement(sql);
+			st.setString(1, memberDTO.getId());
+			result = st.executeUpdate();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
 	
 }
