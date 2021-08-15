@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.ae.ae1.inout.InoutDTO;
 import com.ae.ae1.member.MemberDTO;
 import com.ae.ae1.util.DBConnect;
 
@@ -21,7 +22,7 @@ public class BankBookDAO {
 		PreparedStatement st = null;
 		ResultSet rs= null;
 		MemberDTO memberDTO = null;
-		BankBookDTO bankDTO2 = null;
+	//	BankBookDTO bankDTO2 = null;
 		try {
 			con = dbConnect.getConnect();
 			String sql = "SELECT * FROM BANKBOOK WHERE ID = ?";
@@ -30,13 +31,15 @@ public class BankBookDAO {
 			rs = st.executeQuery();
 			
 			if(rs.next()) {
-				bankDTO2 = new BankBookDTO();
-				bankDTO2.setIssue_date(rs.getDate(1));
-				bankDTO2.setPro_name(rs.getString(2));
-				bankDTO2.setAccount(rs.getString(3));
-				bankDTO2.setBalance(rs.getDouble(4));
-				bankDTO2.setMemberDTO(new MemberDTO());
-				bankDTO2.getMemberDTO().setId(rs.getString(5));
+				bankDTO = new BankBookDTO();
+				bankDTO.setIssue_date(rs.getDate("issue_date"));
+				bankDTO.setPro_name(rs.getString(2));
+				bankDTO.setAccount(rs.getString(3));
+				bankDTO.setBalance(rs.getDouble(4));
+				//bankDTO.setId(rs.getString(5));
+				
+				bankDTO.setMemberDTO(new MemberDTO());
+				bankDTO.getMemberDTO().setId(rs.getString(5));
 			}
 			
 			
@@ -47,7 +50,41 @@ public class BankBookDAO {
 			dbConnect.disConnect(rs, st, con);
 		}
 		
-		return bankDTO2;
+		return bankDTO;
+	}
+	
+	//통장 잔액 업데이트
+	
+	public int update(InoutDTO inoutDTO) {
+		Connection con = null;
+		PreparedStatement st = null;
+		BankBookDTO bankDTO = new BankBookDTO();
+		int result =0;
+		try {
+			con = dbConnect.getConnect();
+			String sql = "UPDATE BANKBOOK SET BALANCE = ? WHERE ID = ? ";
+			st = con.prepareStatement(sql);
+			st.setDouble(1, inoutDTO.getTran_balance());
+			st.setString(2, bankDTO.getMemberDTO().getId());
+			
+			result = st.executeUpdate();
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				st.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+		
 	}
 	
 	
