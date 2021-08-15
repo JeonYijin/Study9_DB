@@ -22,4 +22,9 @@ public class MemberView {
 	}
 	
 	
+	public void view(String msg) {
+		System.out.println(msg);
+	}
+	
+	
 }
